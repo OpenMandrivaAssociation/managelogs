@@ -1,14 +1,14 @@
-%define major 1
+%define major 2
 %define libname %mklibname managelogs %{major}
 
 Summary:	A log management software for apache
 Name:		managelogs
 Group:		System/Servers
-Version:	1.0.1
+Version:	2.0.0
 Release:	%mkrel 1
 License:	Apache license
 URL:		http://managelogs.tekwire.net/
-Source0:	managelogs-1.0.1.tar.gz
+Source0:	managelogs-%{version}.tar.gz
 BuildRequires:	apr-devel
 BuildRequires:	bzip2-devel
 BuildRequires:	zlib-devel
@@ -34,31 +34,25 @@ linked with managelogs.
 
 %setup -q
 
-find . -type d -exec chmod 755 {} \;
-find . -type f -exec chmod 644 {} \;
-
 %build
-make \
-    CC_FLAGS="%{optflags}" \
-    GZIP_LIBS="-lz" \
-    BZ2_LIBS="-lbz2" \
-    LIBTOOL="libtool" \
-    APR_CONFIG="%{_bindir}/apr-1-config"
+%serverbuild
+
+%configure2_5x \
+    --with-apr=%{_bindir}/apr-1-config \
+    --with-zlib=%{_prefix} \
+    --with-bz2=%{_prefix}
+
+%make
 
 %install
 rm -rf %{buildroot}
 
-install -d %{buildroot}%{_bindir}
-install -d %{buildroot}%{_libdir}
-install -d %{buildroot}%{_mandir}/man8
-
-libtool --silent --mode=install install lib/liblogmanager.la %{buildroot}%{_libdir}
-libtool --silent --mode=install install src/managelogs %{buildroot}%{_bindir}
-install -m0644 doc/managelogs.8 %{buildroot}%{_mandir}/man8/
+%makeinstall_std
 
 # cleanup devel crap
 rm -f %{buildroot}%{_libdir}/*.*a
 rm -f %{buildroot}%{_libdir}/*.so
+rm -f %{buildroot}%{_includedir}/*.h
 
 %if %mdkversion < 200900
 %post -n %{libname} -p /sbin/ldconfig
@@ -79,4 +73,3 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/managelogs
 %{_mandir}/man8/managelogs.8*
-
