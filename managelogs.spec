@@ -5,7 +5,7 @@ Summary:	A log management software for apache
 Name:		managelogs
 Group:		System/Servers
 Version:	2.2.1
-Release:	%mkrel 1
+Release:	%mkrel 2
 License:	Apache license
 URL:		http://managelogs.tekwire.net/
 Source0:	managelogs-%{version}.tar.gz
