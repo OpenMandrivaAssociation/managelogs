@@ -5,14 +5,13 @@ Summary:	A log management software for apache
 Name:		managelogs
 Group:		System/Servers
 Version:	2.2.1
-Release:	%mkrel 2
+Release:	3
 License:	Apache license
 URL:		http://managelogs.tekwire.net/
 Source0:	managelogs-%{version}.tar.gz
 BuildRequires:	apr-devel
 BuildRequires:	bzip2-devel
 BuildRequires:	zlib-devel
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-buildroot
 
 %description
 managelogs is a log management program for Apache, like rotatelogs and
@@ -36,34 +35,22 @@ linked with managelogs.
 
 %build
 %serverbuild
+export CFLAGS="%{optflags} -fPIC"
 
 %configure2_5x \
     --with-apr=%{_bindir}/apr-1-config \
     --with-zlib=%{_prefix} \
     --with-bz2=%{_prefix}
 
-%make
+%make CFLAGS="%{optflags} -fPIC"
 
 %install
-rm -rf %{buildroot}
-
 %makeinstall_std
 
 # cleanup devel crap
 rm -f %{buildroot}%{_libdir}/*.*a
 rm -f %{buildroot}%{_libdir}/*.so
 rm -f %{buildroot}%{_includedir}/*.h
-
-%if %mdkversion < 200900
-%post -n %{libname} -p /sbin/ldconfig
-%endif
-
-%if %mdkversion < 200900
-%postun -n %{libname} -p /sbin/ldconfig
-%endif
-
-%clean
-rm -rf %{buildroot}
 
 %files -n %{libname}
 %defattr(-,root,root)
@@ -73,3 +60,33 @@ rm -rf %{buildroot}
 %defattr(-,root,root,-)
 %{_bindir}/managelogs
 %{_mandir}/man8/managelogs.8*
+
+
+%changelog
+* Thu Dec 02 2010 Paulo Andrade <pcpa@mandriva.com.br> 2.2.1-2mdv2011.0
++ Revision: 605303
+- Rebuild with apr with workaround to issue with gcc type based
+
+* Mon Aug 09 2010 Oden Eriksson <oeriksson@mandriva.com> 2.2.1-1mdv2011.0
++ Revision: 568089
+- 2.2.1
+
+* Fri Apr 02 2010 Oden Eriksson <oeriksson@mandriva.com> 2.2.0-1mdv2010.1
++ Revision: 530766
+- 2.2.0
+
+* Thu Mar 11 2010 Oden Eriksson <oeriksson@mandriva.com> 2.1.0-1mdv2010.1
++ Revision: 518153
+- 2.1.0
+
+* Sun Feb 14 2010 Oden Eriksson <oeriksson@mandriva.com> 2.0.0-1mdv2010.1
++ Revision: 505802
+- 2.0.0
+
+* Sun Jan 17 2010 Oden Eriksson <oeriksson@mandriva.com> 1.0.1-1mdv2010.1
++ Revision: 492873
+- import managelogs
+
+
+* Sun Jan 17 2010 Oden Eriksson <oeriksson@mandriva.com> 1.0.1-1mdv2010.0
+- initial Mandriva package
