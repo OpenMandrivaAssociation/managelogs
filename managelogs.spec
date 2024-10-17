@@ -7,7 +7,7 @@ Group:		System/Servers
 Version:	2.2.1
 Release:	4
 License:	Apache license
-URL:		http://managelogs.tekwire.net/
+URL:		https://managelogs.tekwire.net/
 Source0:	managelogs-%{version}.tar.gz
 BuildRequires:	apr-devel
 BuildRequires:	bzip2-devel
